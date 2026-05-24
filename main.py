@@ -71,6 +71,339 @@ a{text-decoration:inherit;color:inherit}
 .group:hover .group-hover\:text-yellow-600{color:#ca8a04}
 """
 
+CUSTOM_CSS = """
+/* Custom UI Styles for Download/Copy buttons and fallback modal */
+.btn-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 270px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #0f172a;
+    color: #ffffff;
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    flex: 1;
+    user-select: none;
+}
+.action-btn:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.action-btn:active {
+    transform: translateY(0);
+}
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+}
+.action-btn:hover svg {
+    transform: scale(1.1);
+}
+.btn-download svg {
+    color: #22d3ee;
+}
+.btn-copy svg {
+    color: #facc15;
+}
+
+#toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid #1e293b;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 9999;
+    white-space: nowrap;
+}
+#toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+.toast-icon-success {
+    color: #4ade80;
+}
+.toast-icon-error {
+    color: #f87171;
+}
+.toast-icon-loading {
+    color: #38bdf8;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+#preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9998;
+    padding: 16px;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+#preview-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-content {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 24px;
+    padding: 24px;
+    max-width: 320px;
+    width: 100%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#preview-modal.show .modal-content {
+    transform: scale(1);
+}
+.close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.close-btn:hover {
+    color: #ffffff;
+    background: #1e293b;
+}
+.modal-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-align: center;
+}
+.modal-desc {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    text-align: center;
+}
+.modal-highlight {
+    color: #facc15;
+    font-weight: 600;
+    display: block;
+    margin-top: 4px;
+}
+.img-container {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.preview-img {
+    max-width: 100%;
+    max-height: 280px;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+"""
+
+CUSTOM_JS = """
+const toast = document.getElementById("toast");
+const toastMessage = document.getElementById("toast-message");
+const toastIcon = document.getElementById("toast-icon");
+const previewModal = document.getElementById("preview-modal");
+const previewImg = document.getElementById("preview-img");
+const closeModalBtn = document.getElementById("close-modal-btn");
+const downloadBtn = document.getElementById("download-btn");
+const copyBtn = document.getElementById("copy-btn");
+
+function showToast(message, type = "success") {
+    toastMessage.innerText = message;
+    
+    if (type === "success") {
+        toastIcon.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="toast-icon-success"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`;
+    } else if (type === "error") {
+        toastIcon.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="toast-icon-error"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+    } else if (type === "loading") {
+        toastIcon.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="toast-icon-loading"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89"></path></svg>`;
+    }
+
+    toast.classList.add("show");
+    
+    if (type !== "loading") {
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+}
+
+function hideToast() {
+    toast.classList.remove("show");
+}
+
+function showFallbackModal(dataUrl) {
+    previewImg.src = dataUrl;
+    previewModal.classList.add("show");
+}
+
+function hideFallbackModal() {
+    previewModal.classList.remove("show");
+}
+
+closeModalBtn.addEventListener("click", hideFallbackModal);
+previewModal.addEventListener("click", (e) => {
+    if (e.target === previewModal) hideFallbackModal();
+});
+
+function captureCard(callback) {
+    const card = document.getElementById("card-to-capture");
+    const btnContainer = document.querySelector(".btn-container");
+    
+    // Hide buttons temporarily to guarantee they aren't captured
+    if (btnContainer) {
+        btnContainer.style.visibility = "hidden";
+    }
+    
+    const options = {
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null,
+        scale: 3, /* Ultra-sharp 3x retina resolution */
+        logging: false
+    };
+
+    html2canvas(card, options).then(canvas => {
+        if (btnContainer) {
+            btnContainer.style.visibility = "visible";
+        }
+        canvas.toBlob(blob => {
+            callback(blob, canvas.toDataURL("image/png"));
+        }, "image/png", 1.0);
+    }).catch(err => {
+        if (btnContainer) {
+            btnContainer.style.visibility = "visible";
+        }
+        console.error("Canvas capture error:", err);
+        hideToast();
+        showToast("Failed to render image", "error");
+    });
+}
+
+downloadBtn.addEventListener("click", () => {
+    showToast("Generating image...", "loading");
+    
+    setTimeout(() => {
+        captureCard((blob, dataUrl) => {
+            try {
+                const titleEl = document.getElementById("movie-title");
+                const titleText = titleEl ? titleEl.innerText.trim() : "movie_card";
+                const safeTitle = titleText.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                
+                const link = document.createElement("a");
+                link.href = dataUrl;
+                link.download = `card_${safeTitle}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                hideToast();
+                showToast("Downloaded!", "success");
+            } catch (err) {
+                console.error("Download error:", err);
+                hideToast();
+                showToast("Download failed", "error");
+            }
+        });
+    }, 150);
+});
+
+copyBtn.addEventListener("click", () => {
+    showToast("Copying to clipboard...", "loading");
+    
+    setTimeout(() => {
+        captureCard((blob, dataUrl) => {
+            try {
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]).then(() => {
+                    hideToast();
+                    showToast("Copied to clipboard!", "success");
+                }).catch(err => {
+                    console.warn("Direct clipboard copy blocked by browser sandbox policy.", err);
+                    hideToast();
+                    showFallbackModal(dataUrl);
+                });
+            } catch (err) {
+                console.warn("ClipboardItem API not supported or blocked.", err);
+                hideToast();
+                showFallbackModal(dataUrl);
+            }
+        });
+    }, 150);
+});
+"""
+
 COMPONENT_TEMPLATE = """
 <!DOCTYPE html>
 <html>
@@ -78,10 +411,12 @@ COMPONENT_TEMPLATE = """
     <meta charset="UTF-8">
     <style>
         {tailwind_css}
+        {custom_css}
     </style>
 </head>
-<body class="bg-black flex items-center justify-center m-0 p-4">
-    <div class='mx-auto bg-white rounded-3xl shadow-xl max-w-[270px]'>
+<body class="bg-black flex flex-col items-center justify-center m-0 p-4">
+    <!-- Card Container with an ID for capture -->
+    <div id="card-to-capture" class='mx-auto bg-white rounded-3xl shadow-xl max-w-[270px]'>
          <div class="rounded-3xl shadow-sm bg-white">
           <img
              src="{cover_url}"
@@ -91,6 +426,7 @@ COMPONENT_TEMPLATE = """
 
           <div class="group px-5 py-3 grid z-10">
             <a
+              id="movie-title"
               href="https://www.imdb.com/title/{imdb_id}/"
               class="group-hover:text-cyan-700 font-bold text-2xl line-clamp-2 text-slate-900"
               target="_blank"
@@ -125,6 +461,53 @@ COMPONENT_TEMPLATE = """
         </div>
         </div>
     </div>
+
+    <!-- Gorgeous Premium Action Button Panel -->
+    <div class="btn-container">
+        <button id="download-btn" class="action-btn btn-download">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            Download
+        </button>
+        <button id="copy-btn" class="action-btn btn-copy">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+            </svg>
+            Copy PNG
+        </button>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div id="toast">
+        <span id="toast-icon"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Fallback Modal for Safe Copying/Saving -->
+    <div id="preview-modal">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="close-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <h3 class="modal-title">Share Card Image</h3>
+            <p class="modal-desc">
+                Due to browser sandbox security policies, direct clipboard access is limited.
+                <span class="modal-highlight">Right-click or long-press the image below to Copy or Save it.</span>
+            </p>
+            <div class="img-container">
+                <img id="preview-img" class="preview-img" src="" alt="Generated Poster Component" />
+            </div>
+        </div>
+    </div>
+
+    <!-- html2canvas and Custom Component JS Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        {custom_js}
+    </script>
 </body>
 </html>
 """
@@ -132,6 +515,18 @@ COMPONENT_TEMPLATE = """
 def extract_id(input_string):
     match = re.search(r'(tt\d+)', input_string)
     return match.group(1) if match else None
+
+def get_image_base64(url):
+    import base64
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            encoded = base64.b64encode(response.content).decode("utf-8")
+            content_type = response.headers.get("content-type", "image/jpeg")
+            return f"data:{content_type};base64,{encoded}"
+    except Exception:
+        pass
+    return url
 
 def fetch_from_tmdb(imdb_id, api_key):
     url = f"https://api.themoviedb.org/3/find/{imdb_id}"
@@ -202,14 +597,19 @@ if user_input:
                     movie_data = fetch_from_tmdb(imdb_id, tmdb_key)
                     
                     if movie_data:
+                        with st.spinner("Converting poster image to offline-ready data URL..."):
+                            cover_base64 = get_image_base64(movie_data["cover_url"])
+
                         rendered_html = COMPONENT_TEMPLATE.format(
                             tailwind_css=TAILWIND_OFFLINE_CORE,
+                            custom_css=CUSTOM_CSS,
+                            custom_js=CUSTOM_JS,
                             imdb_id=imdb_id,
                             title=movie_data["title"],
                             year=movie_data["year"],
                             plot=movie_data["plot"],
                             rating=movie_data["rating"],
-                            cover_url=movie_data["cover_url"],
+                            cover_url=cover_base64,
                             popularity_rank=movie_data["popularity_rank"]
                         )
 
@@ -221,7 +621,7 @@ if user_input:
 
                         with col2:
                             st.subheader("👀 Component Render Sandbox")
-                            components.html(rendered_html, height=520, scrolling=False)
+                            components.html(rendered_html, height=600, scrolling=False)
                             
                     else:
                         st.error(f"No corresponding profile item mapping found for ID: `{imdb_id}`")
