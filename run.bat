@@ -1,0 +1,3 @@
+@echo off
+echo Starting Streamlit app using uv...
+uv run streamlit run main.py
